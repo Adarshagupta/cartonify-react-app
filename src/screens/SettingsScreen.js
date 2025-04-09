@@ -10,7 +10,10 @@ import {
   Switch,
   ActivityIndicator,
   SafeAreaView,
+  StatusBar,
+  Linking,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import AppContext from '../context/AppContext';
 import { updateApiKey } from '../api/replicateApi';
 import { listModels } from '../api/replicateApi';
@@ -55,7 +58,7 @@ const SettingsScreen = () => {
     try {
       setIsLoading(true);
       const success = await updateApiKey(newApiKey);
-      
+
       if (success) {
         setApiKey(newApiKey);
         Alert.alert('Success', 'API key updated successfully');
@@ -73,47 +76,82 @@ const SettingsScreen = () => {
     setSelectedModel(modelId);
   };
 
+  const openReplicateWebsite = () => {
+    Linking.openURL('https://replicate.com');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+
+      {/* Header */}
+      <View style={styles.header}>
         <Text style={styles.title}>Settings</Text>
-        
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+
+        {/* API Key Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>API Key</Text>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="key-outline" size={22} color="#333" />
+            <Text style={styles.sectionTitle}>API Key</Text>
+          </View>
+
           <Text style={styles.sectionDescription}>
             Enter your Replicate API key to use the image generation features.
-            You can get an API key from replicate.com
           </Text>
-          
+
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={openReplicateWebsite}
+          >
+            <Text style={styles.linkText}>Get an API key from replicate.com</Text>
+            <Ionicons name="open-outline" size={16} color="#333" />
+          </TouchableOpacity>
+
           <TextInput
             style={styles.input}
             placeholder="Enter your Replicate API key"
+            placeholderTextColor="#999"
             value={newApiKey}
             onChangeText={setNewApiKey}
             secureTextEntry
           />
-          
+
           <TouchableOpacity
             style={[styles.button, isLoading && styles.disabledButton]}
             onPress={handleSaveApiKey}
             disabled={isLoading}
+            activeOpacity={0.8}
           >
             {isLoading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>Save API Key</Text>
+              <>
+                <Ionicons name="save-outline" size={18} color="#fff" style={styles.buttonIcon} />
+                <Text style={styles.buttonText}>Save API Key</Text>
+              </>
             )}
           </TouchableOpacity>
         </View>
-        
+
+        {/* Model Selection Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Select Model</Text>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="flash-outline" size={22} color="#333" />
+            <Text style={styles.sectionTitle}>AI Model</Text>
+          </View>
+
           <Text style={styles.sectionDescription}>
             Choose which AI model to use for image generation
           </Text>
-          
+
           {isLoadingModels ? (
-            <ActivityIndicator style={styles.modelLoading} />
+            <ActivityIndicator style={styles.modelLoading} color="#333" />
           ) : (
             <View style={styles.modelList}>
               {predefinedModels.map((model) => (
@@ -124,6 +162,7 @@ const SettingsScreen = () => {
                     selectedModel === model.id && styles.selectedModelItem,
                   ]}
                   onPress={() => handleSelectModel(model.id)}
+                  activeOpacity={0.7}
                 >
                   <Text
                     style={[
@@ -134,22 +173,38 @@ const SettingsScreen = () => {
                     {model.name}
                   </Text>
                   {selectedModel === model.id && (
-                    <View style={styles.checkmark} />
+                    <Ionicons name="checkmark-circle" size={22} color="#333" />
                   )}
                 </TouchableOpacity>
               ))}
             </View>
           )}
         </View>
-        
+
+        {/* About Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.aboutText}>
-            Cartonify v1.0.0{'\n'}
-            A mobile app for generating images using AI.{'\n'}
-            Powered by Replicate API.
-          </Text>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="information-circle-outline" size={22} color="#333" />
+            <Text style={styles.sectionTitle}>About</Text>
+          </View>
+
+          <View style={styles.aboutContainer}>
+            <Text style={styles.appName}>Cartonify</Text>
+            <Text style={styles.versionText}>Version 1.0.0</Text>
+            <Text style={styles.aboutText}>
+              A modern, minimal app for generating images using AI.
+            </Text>
+            <View style={styles.poweredByContainer}>
+              <Text style={styles.poweredByText}>Powered by</Text>
+              <TouchableOpacity onPress={openReplicateWebsite}>
+                <Text style={styles.replicateText}>Replicate API</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
+
+        {/* Extra space at bottom for better scrolling */}
+        <View style={styles.bottomSpace} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -158,101 +213,164 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
   },
-  scrollContent: {
-    padding: 20,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6200ee',
-    marginBottom: 20,
+    fontWeight: '700',
+    color: '#333',
+  },
+  scrollContent: {
+    padding: 20,
+    paddingTop: 16,
   },
   section: {
     backgroundColor: '#fff',
-    borderRadius: 15,
+    borderRadius: 20,
     padding: 20,
-    marginBottom: 20,
+    marginBottom: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontWeight: '600',
     color: '#333',
+    marginLeft: 8,
   },
   sectionDescription: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 15,
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  linkButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 16,
+  },
+  linkText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+    marginRight: 4,
   },
   input: {
     backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 16,
+    padding: 16,
     fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 15,
+    borderWidth: 0,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
   button: {
-    backgroundColor: '#6200ee',
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: '#333',
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonIcon: {
+    marginRight: 8,
   },
   disabledButton: {
-    backgroundColor: '#a880e0',
+    backgroundColor: '#999',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   modelList: {
-    marginTop: 10,
+    marginTop: 8,
   },
   modelItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 15,
-    borderRadius: 10,
+    padding: 16,
+    borderRadius: 16,
     backgroundColor: '#f9f9f9',
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#eee',
+    marginBottom: 12,
+    borderWidth: 0,
   },
   selectedModelItem: {
-    borderColor: '#6200ee',
-    backgroundColor: '#f5f0ff',
+    backgroundColor: '#f5f5f5',
+    borderWidth: 0,
   },
   modelName: {
     fontSize: 16,
     color: '#333',
   },
   selectedModelName: {
-    fontWeight: 'bold',
-    color: '#6200ee',
-  },
-  checkmark: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#6200ee',
+    fontWeight: '600',
+    color: '#333',
   },
   modelLoading: {
     marginVertical: 20,
   },
-  aboutText: {
+  aboutContainer: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  appName: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 4,
+  },
+  versionText: {
     fontSize: 14,
+    color: '#888',
+    marginBottom: 16,
+  },
+  aboutText: {
+    fontSize: 16,
     color: '#666',
     lineHeight: 22,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  poweredByContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  poweredByText: {
+    fontSize: 14,
+    color: '#888',
+    marginRight: 4,
+  },
+  replicateText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  bottomSpace: {
+    height: 40,
   },
 });
 
