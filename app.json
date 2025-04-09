@@ -24,7 +24,8 @@
       "permissions": [
         "CAMERA",
         "WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "package": "com.adarshgpt.cartonify"
     },
     "web": {
       "bundler": "metro",

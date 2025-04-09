@@ -18,18 +18,25 @@ import AppContext from '../context/AppContext';
 import { updateApiKey } from '../api/replicateApi';
 import { listModels } from '../api/replicateApi';
 
-const SettingsScreen = () => {
-  const { apiKey, setApiKey, selectedModel, setSelectedModel } = useContext(AppContext);
+const SettingsScreen = ({ navigation }) => {
+  const { apiKey, setApiKey, selectedModel, setSelectedModel, selectedChatModel, setSelectedChatModel } = useContext(AppContext);
   const [newApiKey, setNewApiKey] = useState(apiKey || '');
   const [isLoading, setIsLoading] = useState(false);
   const [models, setModels] = useState([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
 
-  // Predefined models
+  // Predefined image models
   const predefinedModels = [
     { id: 'black-forest-labs/flux-schnell', name: 'FLUX Schnell (Fast)' },
     { id: 'black-forest-labs/flux-1.1-pro', name: 'FLUX 1.1 Pro (High Quality)' },
     { id: 'stability-ai/sdxl', name: 'Stable Diffusion XL' },
+  ];
+
+  // Predefined chat models
+  const predefinedChatModels = [
+    { id: 'replicate/llama-2-70b-chat', name: 'Llama 2 (70B) - Recommended' },
+    { id: 'a16z-infra/llama-2-13b-chat', name: 'Llama 2 (13B) - Faster' },
+    { id: 'stability-ai/stablelm-tuned-alpha-7b', name: 'StableLM (7B) - Alternative' },
   ];
 
   useEffect(() => {
@@ -74,6 +81,10 @@ const SettingsScreen = () => {
 
   const handleSelectModel = (modelId) => {
     setSelectedModel(modelId);
+  };
+
+  const handleSelectChatModel = (modelId) => {
+    setSelectedChatModel(modelId);
   };
 
   const openReplicateWebsite = () => {
@@ -139,11 +150,11 @@ const SettingsScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Model Selection Section */}
+        {/* Image Model Selection Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="flash-outline" size={22} color="#333" />
-            <Text style={styles.sectionTitle}>AI Model</Text>
+            <Ionicons name="image-outline" size={22} color="#333" />
+            <Text style={styles.sectionTitle}>Image Generation Model</Text>
           </View>
 
           <Text style={styles.sectionDescription}>
@@ -181,6 +192,65 @@ const SettingsScreen = () => {
           )}
         </View>
 
+        {/* Chat Model Selection Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="chatbubbles-outline" size={22} color="#333" />
+            <Text style={styles.sectionTitle}>Chat Model</Text>
+          </View>
+
+          <Text style={styles.sectionDescription}>
+            Choose which AI model to use for chat conversations
+          </Text>
+
+          <View style={styles.modelList}>
+            {predefinedChatModels.map((model) => (
+              <TouchableOpacity
+                key={model.id}
+                style={[
+                  styles.modelItem,
+                  selectedChatModel === model.id && styles.selectedModelItem,
+                ]}
+                onPress={() => handleSelectChatModel(model.id)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={[
+                    styles.modelName,
+                    selectedChatModel === model.id && styles.selectedModelName,
+                  ]}
+                >
+                  {model.name}
+                </Text>
+                {selectedChatModel === model.id && (
+                  <Ionicons name="checkmark-circle" size={22} color="#333" />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* RAG Management Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="brain-outline" size={22} color="#333" />
+            <Text style={styles.sectionTitle}>Memory & Context</Text>
+          </View>
+
+          <Text style={styles.sectionDescription}>
+            Manage the app's memory and context awareness
+          </Text>
+
+          <TouchableOpacity
+            style={styles.ragManagementButton}
+            onPress={() => navigation.navigate('RAGManagement')}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.ragManagementButtonText}>Memory Management</Text>
+            <Ionicons name="chevron-forward" size={20} color="#333" />
+          </TouchableOpacity>
+        </View>
+
         {/* About Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -192,7 +262,8 @@ const SettingsScreen = () => {
             <Text style={styles.appName}>Cartonify</Text>
             <Text style={styles.versionText}>Version 1.0.0</Text>
             <Text style={styles.aboutText}>
-              A modern, minimal app for generating images using AI.
+              A modern, minimal app for generating images and chatting using AI.
+              Powered by Meta's Llama 3 for chat and various image models.
             </Text>
             <View style={styles.poweredByContainer}>
               <Text style={styles.poweredByText}>Powered by</Text>
@@ -371,6 +442,20 @@ const styles = StyleSheet.create({
   },
   bottomSpace: {
     height: 40,
+  },
+  ragManagementButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: '#f9f9f9',
+    marginTop: 12,
+  },
+  ragManagementButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
   },
 });
 

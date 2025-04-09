@@ -41,6 +41,10 @@ const GalleryScreen = () => {
     );
   };
 
+  const handleEditImage = (id) => {
+    navigation.navigate('ImageEditor', { imageId: id });
+  };
+
   const { width } = Dimensions.get('window');
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
@@ -80,8 +84,18 @@ const GalleryScreen = () => {
             style={styles.actionButton}
             onPress={() => handleShareImage(item.url)}
           >
-            <Ionicons name="share-outline" size={20} color="#333" />
+            <Ionicons name="share-outline" size={18} color="#333" />
             <Text style={styles.actionButtonText}>Share</Text>
+          </TouchableOpacity>
+
+          <View style={styles.actionDivider} />
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => handleEditImage(item.id)}
+          >
+            <Ionicons name="brush-outline" size={18} color="#333" />
+            <Text style={styles.actionButtonText}>Edit</Text>
           </TouchableOpacity>
 
           <View style={styles.actionDivider} />
@@ -90,7 +104,7 @@ const GalleryScreen = () => {
             style={styles.actionButton}
             onPress={() => handleDeleteImage(item.id)}
           >
-            <Ionicons name="trash-outline" size={20} color="#333" />
+            <Ionicons name="trash-outline" size={18} color="#333" />
             <Text style={styles.actionButtonText}>Delete</Text>
           </TouchableOpacity>
         </View>

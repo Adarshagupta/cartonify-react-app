@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Platform } from 'react-native';
 
@@ -8,8 +9,39 @@ import { View, Platform } from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import GalleryScreen from '../screens/GalleryScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ChatScreen from '../screens/ChatScreen';
+import ImageEditorScreen from '../screens/ImageEditorScreen';
+import RAGManagementScreen from '../screens/RAGManagementScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+// Create stack navigators for each tab
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+  </Stack.Navigator>
+);
+
+const ChatStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="ChatScreen" component={ChatScreen} />
+  </Stack.Navigator>
+);
+
+const GalleryStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="GalleryScreen" component={GalleryScreen} />
+    <Stack.Screen name="ImageEditor" component={ImageEditorScreen} />
+  </Stack.Navigator>
+);
+
+const SettingsStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+    <Stack.Screen name="RAGManagement" component={RAGManagementScreen} />
+  </Stack.Navigator>
+);
 
 const AppNavigator = () => {
   return (
@@ -21,6 +53,8 @@ const AppNavigator = () => {
 
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Chat') {
+              iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
             } else if (route.name === 'Gallery') {
               iconName = focused ? 'images' : 'images-outline';
             } else if (route.name === 'Settings') {
@@ -71,17 +105,22 @@ const AppNavigator = () => {
       >
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          component={HomeStack}
           options={{ tabBarLabel: 'Create' }}
         />
         <Tab.Screen
+          name="Chat"
+          component={ChatStack}
+          options={{ tabBarLabel: 'Chat' }}
+        />
+        <Tab.Screen
           name="Gallery"
-          component={GalleryScreen}
+          component={GalleryStack}
           options={{ tabBarLabel: 'Gallery' }}
         />
         <Tab.Screen
           name="Settings"
-          component={SettingsScreen}
+          component={SettingsStack}
           options={{ tabBarLabel: 'Settings' }}
         />
       </Tab.Navigator>
