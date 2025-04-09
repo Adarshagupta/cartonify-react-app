@@ -42,6 +42,20 @@
         }
       ]
     ],
-    "description": "AI Image Generation App using Replicate API"
+    "description": "AI Image Generation App using Replicate API",
+    "extra": {
+      "eas": {
+        "projectId": "7a3aaf48-1369-4f2c-a6e6-a6a1f0d4e171"
+      }
+    },
+    "owner": "adarshgpt",
+    "updates": {
+      "enabled": true,
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/7a3aaf48-1369-4f2c-a6e6-a6a1f0d4e171"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
   }
 }

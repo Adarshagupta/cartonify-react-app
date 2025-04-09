@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 16.2.2",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development",
+      "env": {
+        "REPLICATE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview",
+      "env": {
+        "REPLICATE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "channel": "production",
+      "env": {
+        "REPLICATE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

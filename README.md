@@ -48,4 +48,63 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-# cartonify-react-app
+
+# Cartonify - AI Image Generator
+
+A React Native application that generates cartoon-style images using AI via the Replicate API.
+
+## Remote Design Updates
+
+This app is configured with Expo EAS Update, allowing you to push design changes and minor updates without requiring app store resubmission.
+
+### Initial Setup
+
+1. **Build and submit your app**
+   ```
+   npx eas-cli build --platform android --profile production
+   npx eas-cli submit --platform android
+   ```
+   
+   For iOS:
+   ```
+   npx eas-cli build --platform ios --profile production
+   npx eas-cli submit --platform ios
+   ```
+
+2. **Make sure your API key is set**
+   Set your Replicate API key in the app settings or in the .env file.
+
+### Publishing Updates
+
+When you make design changes, you can publish them remotely using:
+
+```bash
+# Development updates
+npm run publish-update development "Design update description"
+
+# Production updates
+npm run publish-update production "Design update description"
+```
+
+Users will receive updates automatically when they open the app.
+
+### Update Workflow
+
+1. Make your design changes in the codebase
+2. Test them locally with `npm start`
+3. Commit your changes
+4. Run `npm run publish-update` to push the updates to all users
+5. No app store resubmission required!
+
+### Limitations
+
+- Major functionality changes still require app store resubmission
+- Native code changes (new native modules) can't be updated remotely
+- Updates are downloaded when users open the app (not in the background)
+
+### Troubleshooting
+
+If updates aren't appearing:
+- Check that the app has internet connectivity
+- Verify you published to the correct branch (development/production)
+- Make sure your app.json has the correct projectId
